@@ -9,6 +9,5 @@ public class Person {
     }
     public boolean getDOB(){
         return true;
-    }
+    }}
 
-}
