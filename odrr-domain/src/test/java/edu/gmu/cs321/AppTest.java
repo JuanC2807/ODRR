@@ -9,11 +9,12 @@ public class AppTest {
     /**
      * Rigorous Test :-)
      */
-    @Test
+    /*
+     @Test
     public void shouldAnswerWithTrue() {
         assertTrue(true);
     }
-    
+    */
     /* 
     @Test
     public void testperson_name() {

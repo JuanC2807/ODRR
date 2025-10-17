@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="edu.gmu.cs321.AppTest" time="0.015" tests="2" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="edu.gmu.cs321.PersonTest" time="0.022" tests="6" errors="0" skipped="0" failures="3">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/opt/homebrew/Cellar/openjdk/25/libexec/openjdk.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/juan/Documents/GitHub/odrr/odrr-domain/target/surefire/surefirebooter11998743290317987051.jar /Users/juan/Documents/GitHub/odrr/odrr-domain/target/surefire 2025-10-07T18-38-00_060-jvmRun1 surefire8738615783696600374tmp surefire_06708339146131268922tmp"/>
+    <property name="sun.java.command" value="/Users/juan/Documents/GitHub/odrr/odrr-domain/target/surefire/surefirebooter11748249652568460134.jar /Users/juan/Documents/GitHub/odrr/odrr-domain/target/surefire 2025-10-16T23-10-50_032-jvmRun1 surefire17527114178192473789tmp surefire_017631299212444638626tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/juan/Documents/GitHub/odrr/odrr-domain/target/test-classes:/Users/juan/Documents/GitHub/odrr/odrr-domain/target/classes:/Users/juan/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.11.2/junit-jupiter-api-5.11.2.jar:/Users/juan/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/juan/.m2/repository/org/junit/platform/junit-platform-commons/1.11.2/junit-platform-commons-1.11.2.jar:/Users/juan/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/juan/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.11.2/junit-jupiter-engine-5.11.2.jar:/Users/juan/.m2/repository/org/junit/platform/junit-platform-engine/1.11.2/junit-platform-engine-1.11.2.jar:"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/juan/Documents/GitHub/odrr/odrr-domain/target/surefire/surefirebooter11998743290317987051.jar"/>
+    <property name="surefire.real.class.path" value="/Users/juan/Documents/GitHub/odrr/odrr-domain/target/surefire/surefirebooter11748249652568460134.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="25"/>
@@ -59,6 +59,22 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="69.0"/>
   </properties>
-  <testcase name="shouldAnswerWithTrue" classname="edu.gmu.cs321.AppTest" time="0.009"/>
-  <testcase name="testperson_name" classname="edu.gmu.cs321.AppTest" time="0"/>
+  <testcase name="getPerson_validId_returnPresent" classname="edu.gmu.cs321.PersonTest" time="0.012">
+    <failure message="Valid ID should return a record ==&gt; expected: &lt;true&gt; but was: &lt;false&gt;" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: Valid ID should return a record ==> expected: <true> but was: <false>
+	at edu.gmu.cs321.PersonTest.getPerson_validId_returnPresent(PersonTest.java:48)
+]]></failure>
+  </testcase>
+  <testcase name="getPerson_invalidId_returnsEmpty" classname="edu.gmu.cs321.PersonTest" time="0"/>
+  <testcase name="updatePerson_invalidInput_returnsFalse" classname="edu.gmu.cs321.PersonTest" time="0"/>
+  <testcase name="createPerson_validInputs" classname="edu.gmu.cs321.PersonTest" time="0.001">
+    <failure message="Filled all inputs should not result in an empty ID ==&gt; expected: &lt;false&gt; but was: &lt;true&gt;" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: Filled all inputs should not result in an empty ID ==> expected: <false> but was: <true>
+	at edu.gmu.cs321.PersonTest.createPerson_validInputs(PersonTest.java:19)
+]]></failure>
+  </testcase>
+  <testcase name="updatePerson_validInput_returnsTrue" classname="edu.gmu.cs321.PersonTest" time="0">
+    <failure message="valid updatePerson should return true ==&gt; expected: &lt;true&gt; but was: &lt;false&gt;" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: valid updatePerson should return true ==> expected: <true> but was: <false>
+	at edu.gmu.cs321.PersonTest.updatePerson_validInput_returnsTrue(PersonTest.java:34)
+]]></failure>
+  </testcase>
+  <testcase name="createPerson_invalidInput" classname="edu.gmu.cs321.PersonTest" time="0"/>
 </testsuite>

@@ -45,7 +45,7 @@ public class Person {
         return "";
     }
 
-    public boolean updatePerson(String personId, String newFirstName, String newLastName, Date newdobDate, String newGender){
+    public boolean updatePerson(String personId, String newFirstName, String newLastName, Date newDobDate, String newGender){
         return false;
     }
 
