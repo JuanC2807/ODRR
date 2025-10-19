@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: edu.gmu.cs321.PersonTest
 -------------------------------------------------------------------------------
-Tests run: 6, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 0.022 s <<< FAILURE! - in edu.gmu.cs321.PersonTest
-getPerson_validId_returnPresent  Time elapsed: 0.012 s  <<< FAILURE!
+Tests run: 6, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 0.025 s <<< FAILURE! - in edu.gmu.cs321.PersonTest
+getPerson_validId_returnPresent  Time elapsed: 0.015 s  <<< FAILURE!
 org.opentest4j.AssertionFailedError: Valid ID should return a record ==> expected: <true> but was: <false>
 	at edu.gmu.cs321.PersonTest.getPerson_validId_returnPresent(PersonTest.java:48)
 
@@ -10,7 +10,7 @@ createPerson_validInputs  Time elapsed: 0.001 s  <<< FAILURE!
 org.opentest4j.AssertionFailedError: Filled all inputs should not result in an empty ID ==> expected: <false> but was: <true>
 	at edu.gmu.cs321.PersonTest.createPerson_validInputs(PersonTest.java:19)
 
-updatePerson_validInput_returnsTrue  Time elapsed: 0 s  <<< FAILURE!
+updatePerson_validInput_returnsTrue  Time elapsed: 0.001 s  <<< FAILURE!
 org.opentest4j.AssertionFailedError: valid updatePerson should return true ==> expected: <true> but was: <false>
 	at edu.gmu.cs321.PersonTest.updatePerson_validInput_returnsTrue(PersonTest.java:34)
 
