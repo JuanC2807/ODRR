@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Entry</title>
+</head>
+<body>
+    <h1>Welcome to Orignial Document Return Request Form</h1>
+    <form action="dataEntry" method="POST">
+        <!--First Name input-->
+        <label for="firstName">First Name <span class="required">*</span></label>
+        <input type="text" id="firstName" name="firstName" placeholder="John" required>
+        <!--Last Name input-->
+        <label for="lastName">Last Name <span class="required">*</span></label>
+        <input type="text" id="lastName" name="lastName" placeholder="Doe" required>
+        <br><br>
+        <!--Gender-->
+        <label for="gender">Gender <span class="required">*</span></label>
+        <select id="gender" name="gender" required>
+            <option value="" disabled selected> Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        <br><br>
+        <!--Immigrant ID-->
+        <label for="immigrant_ID">Immigrant ID <span class="required">*</span></label>
+        <input type="text" id="immigrant_ID" name="immigrant_ID" placeholder="F012" required>
+        <br><br>
+        <!--Dependent Name-->
+        <label for="dependent">Dependent </label>
+        <input type="text" id="dependent" name="dependent" placeholder="Bozo">
+        <br><br>
+        <!--Date of Birth-->
+        <label for="dateOfBirth">DOB <span class="required">*</span></label>
+        <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+        <br><br>
+        <!--Email-->
+        <label for="email">email <span class="required">*</span></label>
+        <input type="email" id="email" name="email" placeholder="john123@funk.com" required>
+        <br><br>
+        <!--Document-->
+        <label for="Document">Document<span class="required">*</span></label>
+        <select id="requestedDocument" name="requestedDocument" required>
+            <option value="" disabled selected> Select Requested Document</option>
+            <option value="Birth Certificate">Birth Certificate</option>
+            <option value="Passport">Passport</option>
+        </select>
+        <br><br>
+        <input type="submit" value="Submit">
+        <input type="reset" value="reset">
+      </form>
+</body>
+</html>
