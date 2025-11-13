@@ -1,7 +1,6 @@
 package edu.gmu.cs321;
 
 import java.io.Serializable;
-
 public class ImmigrantData implements Serializable {
     private String firstName;
     private String lastName;
@@ -11,6 +10,7 @@ public class ImmigrantData implements Serializable {
     private String dateOfBirth;
     private String email;
     private String documentRequested;
+    private String notesFromReviewer = "";  // Default value is empty string
 
     // Constructor
     public ImmigrantData(String firstName, String lastName, String gender, String immigrantID,
@@ -23,6 +23,7 @@ public class ImmigrantData implements Serializable {
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.documentRequested = documentRequested;
+        // notesFromReviewer is already initialized to "" by default
     }
 
     // Getters and Setters
@@ -34,6 +35,7 @@ public class ImmigrantData implements Serializable {
     public String getDateOfBirth() { return dateOfBirth; }
     public String getEmail() { return email; }
     public String getDocumentRequested() { return documentRequested; }
+    public String getNotesFromReviewer() { return notesFromReviewer; }  // new getter
 
     public void setFirstName(String firstName) { this.firstName = firstName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
@@ -43,4 +45,5 @@ public class ImmigrantData implements Serializable {
     public void setDateOfBirth(String dateOfBirth) { this.dateOfBirth = dateOfBirth; }
     public void setEmail(String email) { this.email = email; }
     public void setDocumentRequested(String documentRequested) { this.documentRequested = documentRequested; }
+    public void setNotesFromReviewer(String notesFromReviewer) { this.notesFromReviewer = notesFromReviewer; }  // new setter
 }

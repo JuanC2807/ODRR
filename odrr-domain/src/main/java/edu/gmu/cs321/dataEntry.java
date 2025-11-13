@@ -1,5 +1,8 @@
 package edu.gmu.cs321;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +25,21 @@ public class dataEntry extends HttpServlet {
         String email = request.getParameter("email");
         String documentRequested = request.getParameter("requestedDocument");
 
+        // Perform server-side validation
+        String validationError = validateFormData(firstName, lastName, email, immigrantID, dob);
+        
+        if (validationError != null) {
+            // Validation failed - show error page
+            response.setContentType("text/html");
+            PrintWriter out = response.getWriter();
+            out.println("<html><body style='background-color: #2a2a2a; color: white; padding: 40px; font-family: Arial;'>");
+            out.println("<h1 style='color: #ff4444;'>Validation Error</h1>");
+            out.println("<p style='font-size: 18px; margin: 20px 0;'>" + validationError + "</p>");
+            out.println("<button onclick='history.back()' style='background-color: #00bcd4; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;'>Go Back</button>");
+            out.println("</body></html>");
+            return;
+        }
+
         // Create a single object holding all data
         ImmigrantData data = new ImmigrantData(firstName, lastName, gender, immigrantID,
                                                dependent, dob, email, documentRequested);
@@ -30,10 +48,64 @@ public class dataEntry extends HttpServlet {
         HttpSession session = request.getSession();
         session.setAttribute("immigrantData", data);
 
-        // System.out.println("Data saved to session: " + data.getFirstName() + " " + data.getLastName());
-
         // Redirect to review page
         response.sendRedirect(request.getContextPath() + "/review");
-
+    }
+    
+    /**
+     * Validates the form data according to business rules
+     * @return null if valid, error message string if invalid
+     */
+    private String validateFormData(String firstName, String lastName, String email, 
+                                    String immigrantID, String dob) {
+        
+        // Check if first name starts with capital letter
+        if (firstName == null || firstName.isEmpty()) {
+            return "First name is required.";
+        }
+        if (!Character.isUpperCase(firstName.charAt(0))) {
+            return "First name must start with a capital letter.";
+        }
+        
+        // Check if last name starts with capital letter
+        if (lastName == null || lastName.isEmpty()) {
+            return "Last name is required.";
+        }
+        if (!Character.isUpperCase(lastName.charAt(0))) {
+            return "Last name must start with a capital letter.";
+        }
+        
+        // Check if email ends with .com
+        if (email == null || email.isEmpty()) {
+            return "Email is required.";
+        }
+        if (!email.endsWith(".com")) {
+            return "Email must end with .com";
+        }
+        
+        // Check if immigrant ID contains only numbers
+        if (immigrantID == null || immigrantID.isEmpty()) {
+            return "Immigrant ID is required.";
+        }
+        if (!immigrantID.matches("^[0-9]+$")) {
+            return "Immigrant ID must contain only numbers.";
+        }
+        
+        // Check if date of birth is before today
+        if (dob == null || dob.isEmpty()) {
+            return "Date of birth is required.";
+        }
+        try {
+            LocalDate birthDate = LocalDate.parse(dob);
+            LocalDate today = LocalDate.now();
+            if (!birthDate.isBefore(today)) {
+                return "Date of birth must be before today.";
+            }
+        } catch (DateTimeParseException e) {
+            return "Invalid date format for date of birth.";
+        }
+        
+        // All validations passed
+        return null;
     }
 }

@@ -92,31 +92,31 @@ public class Review extends HttpServlet {
         out.println("<div class='main-content'>");
         out.println("<div class='form-section'>");
         out.println("<h2>Immigrant Data Entry</h2>");
-        out.println("<form method='post' action='" + request.getContextPath() + "/review'>");
+        out.println("<form method='post' action='" + request.getContextPath() + "/review' id='reviewForm'>");
         
         // First and Last Name row
         out.println("<div class='row'>");
         out.println("<div class='form-group'>");
         out.println("<label for='firstName'>First Name *</label>");
-        out.println("<input type='text' id='firstName' name='firstName' value='" + escapeHtml(data.getFirstName()) + "'>");
+        out.println("<input type='text' id='firstName' name='firstName' value='" + escapeHtml(data.getFirstName()) + "' required>");
         out.println("</div>");
         out.println("<div class='form-group'>");
         out.println("<label for='lastName'>Last Name *</label>");
-        out.println("<input type='text' id='lastName' name='lastName' value='" + escapeHtml(data.getLastName()) + "'>");
+        out.println("<input type='text' id='lastName' name='lastName' value='" + escapeHtml(data.getLastName()) + "' required>");
         out.println("</div>");
         out.println("</div>");
         
         // Date of Birth
         out.println("<div class='form-group'>");
         out.println("<label for='dateOfBirth'>Date of Birth *</label>");
-        out.println("<input type='date' id='dateOfBirth' name='dateOfBirth' value='" + escapeHtml(data.getDateOfBirth()) + "'>");
+        out.println("<input type='date' id='dateOfBirth' name='dateOfBirth' value='" + escapeHtml(data.getDateOfBirth()) + "' required>");
         out.println("</div>");
         
         // Gender and Immigrant ID row
         out.println("<div class='row'>");
         out.println("<div class='form-group'>");
         out.println("<label for='gender'>Gender *</label>");
-        out.println("<select id='gender' name='gender'>");
+        out.println("<select id='gender' name='gender' required>");
         out.println("<option value=''>Select...</option>");
         String gender = data.getGender();
         out.println("<option value='Male'" + (gender != null && gender.equalsIgnoreCase("Male") ? " selected" : "") + ">Male</option>");
@@ -126,7 +126,7 @@ public class Review extends HttpServlet {
         out.println("</div>");
         out.println("<div class='form-group'>");
         out.println("<label for='immigrant_ID'>Immigrant ID *</label>");
-        out.println("<input type='text' id='immigrant_ID' name='immigrant_ID' value='" + escapeHtml(data.getImmigrantID()) + "'>");
+        out.println("<input type='text' id='immigrant_ID' name='immigrant_ID' value='" + escapeHtml(data.getImmigrantID()) + "' required>");
         out.println("</div>");
         out.println("</div>");
         
@@ -139,13 +139,13 @@ public class Review extends HttpServlet {
         // Email
         out.println("<div class='form-group'>");
         out.println("<label for='email'>Email *</label>");
-        out.println("<input type='email' id='email' name='email' value='" + escapeHtml(data.getEmail()) + "'>");
+        out.println("<input type='email' id='email' name='email' value='" + escapeHtml(data.getEmail()) + "' required>");
         out.println("</div>");
         
         // Document Requested
         out.println("<div class='form-group'>");
         out.println("<label for='requestedDocument'>Document Requested *</label>");
-        out.println("<select id='requestedDocument' name='requestedDocument'>");
+        out.println("<select id='requestedDocument' name='requestedDocument' required>");
         out.println("<option value=''>Select...</option>");
         out.println("<option value='Birth Certificate'" + (data.getDocumentRequested().equals("Birth Certificate") ? " selected" : "") + ">Birth Certificate</option>");
         out.println("<option value='Passport'" + (data.getDocumentRequested().equals("Passport") ? " selected" : "") + ">Passport</option>");
@@ -158,7 +158,7 @@ public class Review extends HttpServlet {
         // Action buttons
         out.println("<div class='form-actions'>");
         out.println("<button type='submit' name='action' value='save' class='btn btn-save'>Save Changes</button>");
-        out.println("<button type='button' class='btn btn-secondary' onclick='alert(\"Revalidating form...\")'>Revalidate</button>");
+        out.println("<button type='button' class='btn btn-secondary' onclick='revalidateForm()'>Revalidate</button>");
         out.println("<button type='submit' name='action' value='approve' class='btn btn-approve'>Send to Approval</button>");
         out.println("</div>");
         
@@ -176,58 +176,159 @@ public class Review extends HttpServlet {
         
         // JavaScript
         out.println("<script>");
-        out.println("document.querySelector('form').addEventListener('submit', function() {");
+        out.println("document.querySelector('form').addEventListener('submit', function(e) {");
+        out.println("  if (e.submitter && e.submitter.value !== 'save') {");
+        out.println("    return;");
+        out.println("  }");
         out.println("  document.getElementById('hiddenNotes').value = document.getElementById('notesArea').value;");
         out.println("});");
+        out.println("");
+        out.println("function revalidateForm() {");
+        out.println("  const form = document.getElementById('reviewForm');");
+        out.println("  const firstName = document.getElementById('firstName').value.trim();");
+        out.println("  const lastName = document.getElementById('lastName').value.trim();");
+        out.println("  const email = document.getElementById('email').value.trim();");
+        out.println("  const immigrantID = document.getElementById('immigrant_ID').value.trim();");
+        out.println("  const dob = document.getElementById('dateOfBirth').value;");
+        out.println("  ");
+        out.println("  // Check HTML5 validation first");
+        out.println("  if (!form.checkValidity()) {");
+        out.println("    form.reportValidity();");
+        out.println("    alert('Validation failed: Please fill in all required fields correctly.');");
+        out.println("    return;");
+        out.println("  }");
+        out.println("  ");
+        out.println("  // Check if first name starts with capital letter");
+        out.println("  if (firstName.length > 0 && firstName[0] !== firstName[0].toUpperCase()) {");
+        out.println("    alert('Validation failed: First name must start with a capital letter.');");
+        out.println("    return;");
+        out.println("  }");
+        out.println("  ");
+        out.println("  // Check if last name starts with capital letter");
+        out.println("  if (lastName.length > 0 && lastName[0] !== lastName[0].toUpperCase()) {");
+        out.println("    alert('Validation failed: Last name must start with a capital letter.');");
+        out.println("    return;");
+        out.println("  }");
+        out.println("  ");
+        out.println("  // Check if email ends with .com");
+        out.println("  if (!email.endsWith('.com')) {");
+        out.println("    alert('Validation failed: Email must end with .com');");
+        out.println("    return;");
+        out.println("  }");
+        out.println("  ");
+        out.println("  // Check if immigrant ID contains only numbers");
+        out.println("  if (!/^[0-9]+$/.test(immigrantID)) {");
+        out.println("    alert('Validation failed: Immigrant ID must contain only numbers.');");
+        out.println("    return;");
+        out.println("  }");
+        out.println("  ");
+        out.println("  // Check if date of birth is before today");
+        out.println("  const today = new Date();");
+        out.println("  today.setHours(0, 0, 0, 0);");
+        out.println("  const birthDate = new Date(dob);");
+        out.println("  if (birthDate >= today) {");
+        out.println("    alert('Validation failed: Date of birth must be before today.');");
+        out.println("    return;");
+        out.println("  }");
+        out.println("  ");
+        out.println("  // All validations passed - redirect to approval");
+        out.println("  document.getElementById('hiddenNotes').value = document.getElementById('notesArea').value;");
+        out.println("  ");
+        out.println("  // Create a form to submit to approval");
+        out.println("  const approvalForm = document.createElement('form');");
+        out.println("  approvalForm.method = 'POST';");
+        out.println("  approvalForm.action = '" + request.getContextPath() + "/review';");
+        out.println("  ");
+        out.println("  // Copy all form data");
+        out.println("  const formData = new FormData(form);");
+        out.println("  formData.forEach((value, key) => {");
+        out.println("    const input = document.createElement('input');");
+        out.println("    input.type = 'hidden';");
+        out.println("    input.name = key;");
+        out.println("    input.value = value;");
+        out.println("    approvalForm.appendChild(input);");
+        out.println("  });");
+        out.println("  ");
+        out.println("  // Add action for revalidate approval");
+        out.println("  const actionInput = document.createElement('input');");
+        out.println("  actionInput.type = 'hidden';");
+        out.println("  actionInput.name = 'action';");
+        out.println("  actionInput.value = 'revalidate';");
+        out.println("  approvalForm.appendChild(actionInput);");
+        out.println("  ");
+        out.println("  document.body.appendChild(approvalForm);");
+        out.println("  approvalForm.submit();");
+        out.println("}");
         out.println("</script>");
         
         out.println("</body>");
         out.println("</html>");
     }
     
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) 
-            throws IOException {
-        
-        HttpSession session = request.getSession();
-        String action = request.getParameter("action");
-        
-        // Update the immigrant data with edited values
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        String gender = request.getParameter("gender");
-        String immigrantID = request.getParameter("immigrant_ID");
-        String dependent = request.getParameter("dependent");
-        String dob = request.getParameter("dateOfBirth");
-        String email = request.getParameter("email");
-        String documentRequested = request.getParameter("requestedDocument");
-        String notes = request.getParameter("notes");
-        
-        ImmigrantData updatedData = new ImmigrantData(firstName, lastName, gender, immigrantID,
-                                                       dependent, dob, email, documentRequested);
-        
-        session.setAttribute("immigrantData", updatedData);
-        
-        // Store notes in session if provided
-        if (notes != null && !notes.isEmpty()) {
-            session.setAttribute("reviewerNotes", notes);
-        }
-        
-        if ("save".equals(action)) {
-            // Redirect back to review page
-            response.sendRedirect(request.getContextPath() + "/review");
-        } else if ("approve".equals(action)) {
-            // Send to approval
-            response.setContentType("text/html");
-            PrintWriter out = response.getWriter();
-            out.println("<html><body style='background-color: #2a2a2a; color: white; padding: 40px; font-family: Arial;'>");
-            out.println("<h1 style='color: #4caf50;'>Form Sent to Approval!</h1>");
-            out.println("<p>The form has been successfully sent to the approval queue.</p>");
-            out.println("<a href='" + request.getContextPath() + "/review' style='color: #00bcd4;'>Review Another Form</a>");
-            out.println("</body></html>");
+  @Override
+public void doPost(HttpServletRequest request, HttpServletResponse response) 
+        throws IOException {
+
+    HttpSession session = request.getSession();
+    ImmigrantData data = (ImmigrantData) session.getAttribute("immigrantData");
+
+    if (data == null) {
+        // No data in session, redirect back
+        response.sendRedirect(request.getContextPath() + "/dataEntry.html");
+        return;
+    }
+
+    String action = request.getParameter("action");
+
+    // Get updated form values
+    String firstName = request.getParameter("firstName");
+    String lastName = request.getParameter("lastName");
+    String gender = request.getParameter("gender");
+    String immigrantID = request.getParameter("immigrant_ID");
+    String dependent = request.getParameter("dependent");
+    String dob = request.getParameter("dateOfBirth");
+    String email = request.getParameter("email");
+    String documentRequested = request.getParameter("requestedDocument");
+    String notes = request.getParameter("notes");
+
+    // 1. Update the existing object
+    data.setFirstName(firstName);
+    data.setLastName(lastName);
+    data.setGender(gender);
+    data.setImmigrantID(immigrantID);
+    data.setDependent(dependent);
+    data.setDateOfBirth(dob);
+    data.setEmail(email);
+    data.setDocumentRequested(documentRequested);
+
+    // 2. Append new notes if present
+    if (notes != null && !notes.trim().isEmpty()) {
+        String existingNotes = data.getNotesFromReviewer();
+        if (existingNotes == null || existingNotes.isEmpty()) {
+            data.setNotesFromReviewer(notes.trim());
+        } else {
+            // Add new notes with a separator (e.g., newline)
+            data.setNotesFromReviewer(existingNotes + "\n" + notes.trim());
         }
     }
-    
+
+    // Save back to session
+    session.setAttribute("immigrantData", data);
+
+    if ("save".equals(action)) {
+        response.sendRedirect(request.getContextPath() + "/review");
+    } else if ("approve".equals(action) || "revalidate".equals(action)) {
+        // Send to approval
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        out.println("<html><body style='background-color: #2a2a2a; color: white; padding: 40px; font-family: Arial;'>");
+        out.println("<h1 style='color: #4caf50;'>Form Sent to Approval!</h1>");
+        out.println("<p>The form has been successfully sent to the approval queue.</p>");
+        out.println("<a href='" + request.getContextPath() + "/review' style='color: #00bcd4;'>Review Another Form</a>");
+        out.println("</body></html>");
+    }
+}
+
     // Helper method to escape HTML
     private String escapeHtml(String text) {
         if (text == null) return "";
