@@ -1,6 +1,7 @@
 package edu.gmu.cs321;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import jakarta.servlet.annotation.WebServlet;
@@ -47,6 +48,15 @@ public class dataEntry extends HttpServlet {
         // Store the object in the session
         HttpSession session = request.getSession();
         session.setAttribute("immigrantData", data);
+
+        // Insert into DB
+        try {
+            int formId = FormDAO.insertForm(data);
+            session.setAttribute("formId", formId);
+        } catch (SQLException e) {
+            throw new RuntimeException("DB insert failed", e);
+        }
+
 
         // Redirect to review page
         response.sendRedirect(request.getContextPath() + "/review");
