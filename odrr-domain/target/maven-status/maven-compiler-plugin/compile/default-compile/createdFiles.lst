@@ -1,4 +1,5 @@
-edu/gmu/cs321/dataEntry.class
-edu/gmu/cs321/Person.class
-edu/gmu/cs321/review.class
-edu/gmu/cs321/App.class
+edu\gmu\cs321\dataEntry.class
+edu\gmu\cs321\App.class
+edu\gmu\cs321\Person.class
+edu\gmu\cs321\ImmigrantData.class
+edu\gmu\cs321\Review.class
