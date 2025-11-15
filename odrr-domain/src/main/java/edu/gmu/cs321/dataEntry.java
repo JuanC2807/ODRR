@@ -54,8 +54,9 @@ public class dataEntry extends HttpServlet {
             int formId = FormDAO.insertForm(data);
             session.setAttribute("formId", formId);
         } catch (SQLException e) {
-            throw new RuntimeException("DB insert failed", e);
+            throw new RuntimeException("Database insert failed", e);
         }
+
 
 
         // Redirect to review page
