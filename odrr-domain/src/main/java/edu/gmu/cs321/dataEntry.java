@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +14,13 @@ import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/dataEntry")
 public class dataEntry extends HttpServlet {
+     @Override
+    public void init() throws ServletException {
+        super.init();
+        System.out.println("Running DB initializer from dataEntry servlet...");
+        DatabaseInitializer.initialize();
+    }
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws IOException {
@@ -58,10 +67,10 @@ public class dataEntry extends HttpServlet {
         }
 
 
-
         // Redirect to review page
         response.sendRedirect(request.getContextPath() + "/review");
     }
+
     
     /**
      * Validates the form data according to business rules
