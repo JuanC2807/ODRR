@@ -62,6 +62,16 @@ public class dataEntry extends HttpServlet {
         try {
             int formId = FormDAO.insertForm(data);
             session.setAttribute("formId", formId);
+
+            //submission
+            String submittedBy = firstName + " " + lastName;
+            FormSubmission submission = new FormSubmission(formId, submittedBy);
+            FormSubmissionDAO submissionDAO = new FormSubmissionDAO();
+            submissionDAO.saveSubmission(submission);
+
+            //Mark as submitted for review
+            FormDAO.updateStatus(formId, "submitted");
+
         } catch (SQLException e) {
             throw new RuntimeException("Database insert failed", e);
         }

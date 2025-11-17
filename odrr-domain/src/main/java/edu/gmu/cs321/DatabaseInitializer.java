@@ -21,12 +21,25 @@ public class DatabaseInitializer {
         "   modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" +
         ");";
 
+    private static final String CREATE_FORM_SUBMISSIONS_TABLE = 
+        "CREATE TABLE IF NOT EXISTS form_submissions (" +
+        "   id INT AUTO_INCREMENT PRIMARY KEY," +
+        "   form_id INT NOT NULL," +
+        "   submitted_by VARCHAR(255) NOT NULL," +
+        "   submitted_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+        "   FOREIGN KEY (form_id) REFERENCES forms(id)" +
+        ");";
+
     public static void initialize() {
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate(CREATE_FORMS_TABLE);
-            System.out.println("forms table created or already exists.");
+
+            stmt.executeUpdate(CREATE_FORM_SUBMISSIONS_TABLE);
+
+            System.out.println("Database initialization complete: tables created or already exists.");
+
 
         } catch (Exception e) {
             e.printStackTrace();

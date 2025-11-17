@@ -1,8 +1,12 @@
 package edu.gmu.cs321;
 
+import java.security.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.SQLException;
 import java.sql.Date;
 
@@ -37,5 +41,54 @@ public class FormDAO {
         }
 
         throw new SQLException("Failed to insert form");
+    }
+
+    public static void updateStatus(int formId, String status) throws SQLException {
+        String sql = "UPDATE forms SET status = ? WHERE id = ?";
+
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+                ps.setString(1, status);
+                ps.setInt(2, formId);
+                ps.executeUpdate();
+            }
+        
+    }
+
+    public static List<ReviewerQueueItem> getReviewerQueue() throws SQLException {
+        String sql = """
+            SELECT f.id,
+                   f.first_name,
+                   f.last_name,
+                   f.status,
+                   fs.submitted_by,
+                   fs.submitted_date
+            FORM forms f
+            JOIN form_submissions fs ON f.id = fs.form_id
+            WHERE f.status = 'submitted'
+            ORDER BY fs.submitted_date ASC
+            """;
+
+        List<ReviewerQueueItem> queue = new ArrayList<>();
+
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()){
+
+                while (rs.next()) {
+                    ReviewerQueueItem item = new ReviewerQueueItem();
+                    item.setFormId(rs.getInt("id"));
+                    item.setApplicantName(rs.getString("first_name") + " " + rs.getString("last_name"));
+                    item.setStatus(rs.getString("status"));
+                    item.setSubmittedBy(rs.getString("submitted_by"));
+
+                    java.sql.Timestamp ts = rs.getTimestamp("submitted_date");
+                    if (ts != null){
+                        item.setSubmittedDate(ts.toLocalDateTime());
+                    }
+                    queue.add(item);
+                }
+            }
+            return queue;
     }
 }

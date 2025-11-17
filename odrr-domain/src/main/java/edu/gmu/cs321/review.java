@@ -2,6 +2,10 @@ package edu.gmu.cs321;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
+
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +24,15 @@ public class Review extends HttpServlet {
         // Get session and retrieve immigrant data
         HttpSession session = request.getSession();
         ImmigrantData data = (ImmigrantData) session.getAttribute("immigrantData");
+
+        //Load reviewer queue from Data Base
+        List<ReviewerQueueItem> queue = null;
+        try {
+            queue = FormDAO.getReviewerQueue();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         
         // If no data in session, show error message
         if (data == null) {
@@ -85,8 +98,25 @@ public class Review extends HttpServlet {
         // Queue section
         out.println("<div class='queue-section'>");
         out.println("<h2>Review Queue</h2>");
-        out.println("<div class='queue-empty'>No forms in queue</div>");
+        if (queue == null || queue.isEmpty()){
+            out.println("<div class='queue-empty'>No forms in queue</div>");
+        } else {
+            out.println("<ul style='list-style: none; padding: 0; margin: 0;'>");
+            for(ReviewerQueueItem item : queue) {
+                String label = escapeHtml(item.getApplicantName());
+                String submitted = (item.getSubmittedDate() != null) ? item.getSubmittedDate().format(formatter): "N/A";
+                out.println("<li style='margin-bottom: 10px;'>");
+                out.println("<a href='" + request.getContextPath() + "/review?formId=" 
+                            + item.getFormId() + "' " +
+                            "style='color: #00bcd4; text-decoration: none; display: block;'>");
+                out.println(label + "<br><span style = 'font-size: 12px; color: #aaa;'>Submitted: " + submitted + "</span>");
+                out.println("</a>");
+                out.println("</li>");
+            }
+            out.println("</ul>");
+        } 
         out.println("</div>");
+        //end of queue
         
         // Main content
         out.println("<div class='main-content'>");
