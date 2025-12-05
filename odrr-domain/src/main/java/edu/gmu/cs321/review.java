@@ -25,6 +25,25 @@ public class Review extends HttpServlet {
         HttpSession session = request.getSession();
         ImmigrantData data = (ImmigrantData) session.getAttribute("immigrantData");
 
+        //If a formID is provided in the URL, load that form from the Data Base
+        String formIdParam = request.getParameter("formId");
+        if(formIdParam != null){
+            try{
+                int formId = Integer.parseInt(formIdParam);
+                //Store for later use
+                session.setAttribute("formId", formId);
+
+                ImmigrantData loaded = FormDAO.getFormById(formId);
+                if(loaded != null){
+                    data = loaded;
+                    session.setAttribute("immigrantData", data);
+                }
+            } catch (NumberFormatException | SQLException e){
+                e.printStackTrace();
+                //if we encounter an error load what was already in the session
+            }
+        }
+
         //Load reviewer queue from Data Base
         List<ReviewerQueueItem> queue = null;
         try {

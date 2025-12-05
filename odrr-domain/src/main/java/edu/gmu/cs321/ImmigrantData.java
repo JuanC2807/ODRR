@@ -12,6 +12,8 @@ public class ImmigrantData implements Serializable {
     private String documentRequested;
     private String notesFromReviewer = "";  // Default value is empty string
 
+    //Empty Constructor
+    public ImmigrantData(){}
     // Constructor
     public ImmigrantData(String firstName, String lastName, String gender, String immigrantID,
                          String dependent, String dateOfBirth, String email, String documentRequested) {

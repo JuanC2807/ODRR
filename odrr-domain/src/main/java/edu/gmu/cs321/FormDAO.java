@@ -1,6 +1,5 @@
 package edu.gmu.cs321;
 
-import java.security.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -63,7 +62,7 @@ public class FormDAO {
                    f.status,
                    fs.submitted_by,
                    fs.submitted_date
-            FORM forms f
+            FROM forms f
             JOIN form_submissions fs ON f.id = fs.form_id
             WHERE f.status = 'submitted'
             ORDER BY fs.submitted_date ASC
@@ -90,5 +89,49 @@ public class FormDAO {
                 }
             }
             return queue;
+    }
+
+    public static ImmigrantData getFormById(int id) throws SQLException {
+        String sql = """
+                SELECT first_name,
+                       last_name,
+                       gender,
+                       immigrant_id,
+                       dependent,
+                       date_of_birth,
+                       email,
+                       document_requested
+                FROM forms
+                WHERE id = ?
+                """;
+
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+                ps.setInt(1, id);
+
+                try(ResultSet rs = ps.executeQuery()){
+                    if(rs.next()){
+                        ImmigrantData data = new ImmigrantData();
+                        data.setFirstName(rs.getString("first_name"));
+                        data.setLastName(rs.getString("last_name"));
+                        data.setGender(rs.getString("gender"));
+                        data.setImmigrantID(rs.getString("immigrant_id"));
+                        data.setDependent(rs.getString("dependent"));
+
+                        Date dob = rs.getDate("date_of_birth");
+                        if(dob != null){
+                            data.setDateOfBirth(dob.toLocalDate().toString());
+                        }
+
+                        data.setEmail(rs.getString("email"));
+                        data.setDocumentRequested(rs.getString("document_requested"));
+                        return data;
+                    }
+                }
+            }
+
+
+        //If a row was not found
+        return null;
     }
 }
