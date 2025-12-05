@@ -100,7 +100,8 @@ public class FormDAO {
                        dependent,
                        date_of_birth,
                        email,
-                       document_requested
+                       document_requested,
+                       reviewer_notes
                 FROM forms
                 WHERE id = ?
                 """;
@@ -125,6 +126,11 @@ public class FormDAO {
 
                         data.setEmail(rs.getString("email"));
                         data.setDocumentRequested(rs.getString("document_requested"));
+
+                        String reviewerNotes = rs.getString("reviewer_notes");
+                        if(reviewerNotes != null){
+                            data.setNotesFromReviewer(reviewerNotes);
+                        }
                         return data;
                     }
                 }
@@ -133,5 +139,15 @@ public class FormDAO {
 
         //If a row was not found
         return null;
+    }
+
+    public static void updateReviewerNotes(int formId, String notes) throws SQLException{
+        String sql = "UPDATE forms SET reviewer_notes = ? WHERE id = ?";
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+                ps.setString(1, notes);
+                ps.setInt(2, formId);
+                ps.executeUpdate();
+            }
     }
 }

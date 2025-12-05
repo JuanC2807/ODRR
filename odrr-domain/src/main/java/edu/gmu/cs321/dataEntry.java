@@ -71,14 +71,13 @@ public class dataEntry extends HttpServlet {
 
             //Mark as submitted for review
             FormDAO.updateStatus(formId, "submitted");
+            //Redirect to this new form in the review screen
+            response.sendRedirect(request.getContextPath() + "/review?formId=" + formId);
+            return;
 
         } catch (SQLException e) {
             throw new RuntimeException("Database insert failed", e);
         }
-
-
-        // Redirect to review page
-        response.sendRedirect(request.getContextPath() + "/review");
     }
 
     

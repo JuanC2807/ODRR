@@ -17,6 +17,7 @@ public class DatabaseInitializer {
         "   email VARCHAR(255) NOT NULL," +
         "   document_requested VARCHAR(255) NOT NULL," +
         "   status VARCHAR(50) DEFAULT 'notSent'," +
+        "   reviewer_notes TEXT," +
         "   created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
         "   modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" +
         ");";

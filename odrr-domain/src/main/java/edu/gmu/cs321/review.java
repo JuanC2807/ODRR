@@ -21,46 +21,68 @@ public class Review extends HttpServlet {
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
         
-        // Get session and retrieve immigrant data
         HttpSession session = request.getSession();
-        ImmigrantData data = (ImmigrantData) session.getAttribute("immigrantData");
+        ImmigrantData data = null;
+        Integer currentFormId = null;
 
-        //If a formID is provided in the URL, load that form from the Data Base
-        String formIdParam = request.getParameter("formId");
-        if(formIdParam != null){
-            try{
-                int formId = Integer.parseInt(formIdParam);
-                //Store for later use
-                session.setAttribute("formId", formId);
-
-                ImmigrantData loaded = FormDAO.getFormById(formId);
-                if(loaded != null){
-                    data = loaded;
-                    session.setAttribute("immigrantData", data);
-                }
-            } catch (NumberFormatException | SQLException e){
-                e.printStackTrace();
-                //if we encounter an error load what was already in the session
-            }
-        }
-
-        //Load reviewer queue from Data Base
+        //Loads reviewer queue from DataBase
         List<ReviewerQueueItem> queue = null;
-        try {
+        try{
             queue = FormDAO.getReviewerQueue();
-        } catch (SQLException e){
+        } catch(SQLException e){
             e.printStackTrace();
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        
-        // If no data in session, show error message
-        if (data == null) {
-            out.println("<html><body style='background-color: #2a2a2a; color: white; padding: 40px;'>");
-            out.println("<h2>No form data found in session</h2>");
-            out.println("<a href='" + request.getContextPath() + "/dataEntry.html' style='color: #00bcd4;'>Go to Data Entry</a>");
+
+        //if a formId is provided in the URL, load form from the data base
+        String formIdParam = request.getParameter("formId");
+        if (formIdParam != null){
+            try {
+                currentFormId = Integer.parseInt(formIdParam);
+                ImmigrantData loaded = FormDAO.getFormById(currentFormId);
+                if (loaded != null) {
+                    data = loaded;
+                }
+            } catch(NumberFormatException | SQLException e){
+                e.printStackTrace();
+            }
+        }
+        //3
+        if(data == null && queue != null && !queue.isEmpty()){
+            currentFormId = queue.get(0).getFormId();
+            try{
+                data = FormDAO.getFormById(currentFormId);
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        //4
+        if(data != null && currentFormId != null) {
+            session.setAttribute("formId", currentFormId);
+            session.setAttribute("immigrantData", data);
+        }
+
+        //5
+        if(data == null) {
+            out.println("<!DOCTYPE html>");
+            out.println("<html lang='en'>");
+            out.println("<head>");
+            out.println("<meta charset='UTF-8'>");
+            out.println("<meta name='viewport' content='width=device-width, initial-scale=1.0'>");
+            out.println("<title>Review Form</title>");
+            out.println("</head>");
+            out.println("<body style='background-color: #2a2a2a; color: white; padding: 40px; font-family: Arial;'>");
+            out.println("<h1>Review Queue</h1>");
+            if(queue == null || queue.isEmpty()){
+                out.println("<p>There are currently no forms waiting for review.</p>");
+            } else {
+                out.println("<p>Unable to load the selected form.</p>");
+            }
+            out.println("<a href='" + request.getContextPath() + "/review' style='color: #00bcd4;'>Reload</a>");
             out.println("</body></html>");
             return;
         }
+
         
         // Generate full styled HTML
         out.println("<!DOCTYPE html>");
@@ -216,9 +238,11 @@ public class Review extends HttpServlet {
         out.println("</div>");
         
         // Notes section
+        //Updated this so notes display saved ones also
         out.println("<div class='notes-section'>");
         out.println("<h2>Reviewer Notes</h2>");
-        out.println("<textarea id='notesArea' placeholder='Add notes about this review...'></textarea>");
+        String existingNotes = escapeHtml(data.getNotesFromReviewer());
+        out.println("<textarea id='notesArea' placeholder='Add notes about this review...'>" + existingNotes + "</textarea>");
         out.println("</div>");
         
         out.println("</div>"); // End container
@@ -363,6 +387,21 @@ public void doPost(HttpServletRequest request, HttpServletResponse response)
 
     // Save back to session
     session.setAttribute("immigrantData", data);
+
+    // Added so that notes actually get saved
+    Integer formIdObj = (Integer) session.getAttribute("formId");
+    if(formIdObj != null){
+        int formId = formIdObj;
+        try{
+            FormDAO.updateReviewerNotes(formId, data.getNotesFromReviewer());
+            if("approve".equals(action) || "revalidate".equals(action)){
+                FormDAO.updateStatus(formId, "inApproval");
+            }
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
 
     if ("save".equals(action)) {
         response.sendRedirect(request.getContextPath() + "/review");
