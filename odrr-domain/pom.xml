@@ -132,6 +132,11 @@
             </execution>
           </executions>
         </plugin>
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-site-plugin</artifactId>
+  <version>3.12.1</version>
+</plugin>
 
       </plugins>
     </pluginManagement>
@@ -145,5 +150,30 @@
     </plugins>
 
   </build>
+<reporting>
+  <plugins>
 
+    <!-- Checkstyle report -->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-checkstyle-plugin</artifactId>
+      <version>3.3.1</version>
+      <reportSets>
+        <reportSet>
+          <reports>
+            <report>checkstyle</report>
+          </reports>
+        </reportSet>
+      </reportSets>
+    </plugin>
+
+    <!-- Project info reports (older version to avoid crash) -->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-project-info-reports-plugin</artifactId>
+      <version>3.6.1</version> 
+    </plugin>
+
+  </plugins>
+</reporting>
 </project>
