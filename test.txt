@@ -1,5 +1,1 @@
-example text. this is just to test 
-things like making a pull request.
-we have made multiple ones of these in the past
-the reason we're doing an example is just because we're already done
-with the project 
+this will be in main. its diff.
