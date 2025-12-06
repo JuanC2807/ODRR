@@ -14,7 +14,7 @@ build_job:
   tags:
     - windows
   script:
-    - echo "Building Javfa project..."
+    - echo "Building Javsfa project..."
     - mvn clean package -DskipTests=true
   artifacts:
     paths:
