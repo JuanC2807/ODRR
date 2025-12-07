@@ -102,6 +102,13 @@ public class Review extends HttpServlet {
         out.println(".queue-section { width: 250px; background-color: #1e1e1e; border-right: 1px solid #444; padding: 20px; }");
         out.println(".queue-section h2 { font-size: 18px; margin-bottom: 15px; color: #00bcd4; }");
         out.println(".queue-empty { color: #888; font-size: 14px; font-style: italic; }");
+        // Queue items as actual buttons-start
+        out.println(".queue-button {" + "display: block;" + "width: 100%;" + "padding: 10px 14px;" + "margin-bottom: 10px;" + "border-radius: 8px;" + "border: 1px solid #00bcd4;" + "background-color: #2a2a2a;" + "color: #ffff;" + "text-decoration: none;" + "font-size: 14px;" + "line-height: 1.3;" + "transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;" + "}");
+        out.println(".queue-button-name {" + "font-weight: 600;" + "}");
+        out.println(".queue-button-meta {" + "font-size: 12px;" + "color: #aaa;" + "}");
+        out.println(".queue-button:hover {" + "background-color: #00bcd4;" + "color: #111;" + "transform: translateY(-1px);" + "box-shadow: 0 4px 10px rgba(0,0,0,0.45);" + "}");
+        out.println(".queue-button.active {" + "background-color: #00bcd4;" + "color: $111;" + "box-shadow: 0 0 0 1px #00e1ff;" + "}");
+        // Queue items as actual buttons-end
         out.println(".main-content { flex: 1; padding: 40px; overflow-y: auto; }");
         out.println(".form-section { max-width: 800px; background-color: #3a3a3a; padding: 30px; border-radius: 8px; margin-bottom: 20px; }");
         out.println(".form-section h2 { margin-bottom: 25px; font-size: 24px; }");
@@ -146,15 +153,14 @@ public class Review extends HttpServlet {
             for(ReviewerQueueItem item : queue) {
                 String label = escapeHtml(item.getApplicantName());
                 String submitted = (item.getSubmittedDate() != null) ? item.getSubmittedDate().format(formatter): "N/A";
-                out.println("<li style='margin-bottom: 10px;'>");
+                boolean isActive = (currentFormId != null && currentFormId.equals(item.getFormId()));
                 out.println("<a href='" + request.getContextPath() + "/review?formId=" 
                             + item.getFormId() + "' " +
-                            "style='color: #00bcd4; text-decoration: none; display: block;'>");
-                out.println(label + "<br><span style = 'font-size: 12px; color: #aaa;'>Submitted: " + submitted + "</span>");
+                            "class='queue-button" + (isActive ? "active" : "") + "'>");
+                out.println(" <div class='queue-button-name'>" + label + "</div>");
+                out.println(" <div class='queue-button-meta'>Submitted: " + submitted + "</div>");
                 out.println("</a>");
-                out.println("</li>");
             }
-            out.println("</ul>");
         } 
         out.println("</div>");
         //end of queue
