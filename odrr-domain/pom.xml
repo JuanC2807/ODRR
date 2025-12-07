@@ -53,6 +53,7 @@
   </dependencies>
 
   <build>
+      <finalName>odrr-domain</finalName>
 
     <!-- versions + configuration stored here -->
     <pluginManagement>
