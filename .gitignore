@@ -2,3 +2,5 @@
 *.class
 *.class
 *.class
+odrr-domain/target/classes/edu/gmu/cs321/Person.class
+*.class
